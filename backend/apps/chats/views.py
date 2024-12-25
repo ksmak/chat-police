@@ -1,7 +1,6 @@
 from django.core.files.storage import FileSystemStorage
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_202_ACCEPTED,
@@ -15,8 +14,6 @@ from .serializers import ChatSerializer
 class ChatViewSet(ViewSet):
     """ChatViewSet."""
 
-    perimission_classes = [IsAuthenticated]
-
     def list(self, request):
         queryset = Chat.objects.filter(users__in=[self.request.user.id])
         serializer = ChatSerializer(queryset, many=True)
@@ -25,8 +22,6 @@ class ChatViewSet(ViewSet):
 
 class FileUploadView(APIView):
     """View for upload user's files."""
-
-    perimission_classes = [IsAuthenticated]
 
     def post(self, request):
         if not request.FILES and not request.FILES["file"]:

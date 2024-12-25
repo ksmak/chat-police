@@ -9,17 +9,13 @@ from chats.models import Chat, Message
 class UserSerializerTest(TestCase):
     def setUp(self):
         self.user1 = CustomUser.objects.create_user(
-            username="testuser1", password="Zz@12345", email="testuser1@mail.ru"
+            username="testuser1", ip="192.168.100.1", name="testuser1", password="12345"
         )
-        self.user1.first_name = "Ахмет"
-        self.user1.last_name = "Ахметов"
         self.user1.save()
 
         self.user2 = CustomUser.objects.create_user(
-            username="testuser2", password="Zz@12345", email="testuser2@mail.ru"
+            username="testuser2", ip="192.168.100.2", name="testuser2", password="12345"
         )
-        self.user2.first_name = "Самат"
-        self.user2.last_name = "Саматов"
         self.user2.save()
 
         self.chat = Chat.objects.create(
@@ -51,9 +47,6 @@ class UserSerializerTest(TestCase):
         self.message3.save()
 
     def tearDown(self):
-        self.message1.delete()
-        self.message2.delete()
-        self.message3.delete()
         self.chat.delete()
         self.user1.delete()
         self.user2.delete()
@@ -71,7 +64,7 @@ class UserSerializerTest(TestCase):
             "changed_at": ANY,
             "deleted_at": ANY,
             "readers": [],
-            "fullname": self.user1.full_name,
+            "name": self.user1.name,
         }
 
         message2 = {
@@ -86,14 +79,13 @@ class UserSerializerTest(TestCase):
             "changed_at": ANY,
             "deleted_at": ANY,
             "readers": [],
-            "fullname": self.user2.full_name,
+            "name": self.user2.name,
         }
 
         serializer1 = CustomUserSerializer(self.user1)
         test_data1 = {
             "id": self.user1.id,
-            "username": self.user1.username,
-            "full_name": self.user1.full_name,
+            "name": self.user1.name,
             "is_active": self.user1.is_active,
             "messages": [message1, message2],
             "online": None,
@@ -103,8 +95,7 @@ class UserSerializerTest(TestCase):
         serializer2 = CustomUserSerializer(self.user2)
         test_data2 = {
             "id": self.user2.id,
-            "username": self.user2.username,
-            "full_name": self.user2.full_name,
+            "name": self.user2.name,
             "is_active": self.user2.is_active,
             "messages": [message1, message2],
             "online": None,

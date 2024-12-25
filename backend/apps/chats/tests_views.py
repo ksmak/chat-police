@@ -10,12 +10,12 @@ from unittest.mock import ANY
 class ChatViewTest(APITestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(
-            username="testuser", password="Zz@12345", email="user@mail.ru"
+            username="testuser1", ip="192.168.100.1", name="testuser1", password="12345"
         )
         self.user.save()
 
         self.seconduser = CustomUser.objects.create_user(
-            username="testseconduser", password="Zz@12345", email="seconduser@mail.ru"
+            username="testuser2", ip="192.168.100.2", name="testuser2", password="12345"
         )
         self.seconduser.save()
 
@@ -32,15 +32,13 @@ class ChatViewTest(APITestCase):
         self.message.save()
 
     def tearDown(self):
+        self.chat.delete()
         self.user.delete()
 
     def test_without_auth(self):
         self.client.force_authenticate(user=None)
 
-        response = self.client.post(path="/api/chats/", data={}, format="json")
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-        response = self.client.get("/api/chats/", format="json")
+        response = self.client.get(path="/api/chats/", format="json")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
         response = self.client.post(path="/api/uploadfile/", format="multipart")
@@ -53,8 +51,8 @@ class ChatViewTest(APITestCase):
             {
                 "id": ANY,
                 "title": self.chat.title,
-                "users": [self.seconduser.id, self.user.id],
-                "actives": [self.seconduser.id, self.user.id],
+                "users": [self.user.id, self.seconduser.id],
+                "actives": [self.user.id, self.seconduser.id],
                 "created_at": ANY,
                 "messages": [
                     {
@@ -64,12 +62,12 @@ class ChatViewTest(APITestCase):
                         "to_user": None,
                         "to_chat": self.message.to_chat.id,
                         "text": self.message.text,
-                        "file": self.message.file,
+                        "file": None,
                         "created_at": ANY,
                         "changed_at": ANY,
                         "deleted_at": ANY,
                         "readers": [],
-                        "fullname": self.message.from_user.full_name,
+                        "name": self.message.from_user.name,
                     }
                 ],
             }

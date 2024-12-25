@@ -14,17 +14,13 @@ from .serializers import (
 class ChatSerializerTest(TestCase):
     def setUp(self):
         self.user1 = CustomUser.objects.create_user(
-            username="testuser1", password="Zz@12345", email="testuser1@mail.ru"
+            username="testuser1", ip="192.168.100.1", name="testuser1", password="12345"
         )
-        self.user1.first_name = "Ахмет"
-        self.user1.last_name = "Ахметов"
         self.user1.save()
 
         self.user2 = CustomUser.objects.create_user(
-            username="testuser2", password="Zz@12345", email="testuser2@mail.ru"
+            username="testuser2", ip="192.168.100.2", name="testuser2", password="12345"
         )
-        self.user2.first_name = "Самат"
-        self.user2.last_name = "Саматов"
         self.user2.save()
 
         self.chat = Chat.objects.create(
@@ -62,9 +58,6 @@ class ChatSerializerTest(TestCase):
         self.online_user.save()
 
     def tearDown(self):
-        self.message1.delete()
-        self.message2.delete()
-        self.message3.delete()
         self.chat.delete()
         self.user1.delete()
         self.user2.delete()
@@ -75,7 +68,7 @@ class ChatSerializerTest(TestCase):
             "id": ANY,
             "message": self.message1.id,
             "user": self.user2.id,
-            "fullname": self.user2.full_name,
+            "name": self.user2.name,
             "read_date": ANY,
         }
         self.assertDictEqual(serializer.data, test_data)
@@ -98,11 +91,11 @@ class ChatSerializerTest(TestCase):
                     "id": ANY,
                     "message": self.message1.id,
                     "user": self.user2.id,
-                    "fullname": self.user2.full_name,
+                    "name": self.user2.name,
                     "read_date": ANY,
                 }
             ],
-            "fullname": self.user1.full_name,
+            "name": self.user1.name,
         }
         self.assertDictEqual(serializer.data, test_data)
 
@@ -122,12 +115,12 @@ class ChatSerializerTest(TestCase):
                     "to_user": None,
                     "to_chat": self.message3.to_chat.id,
                     "text": self.message3.text,
-                    "file": self.message3.file,
+                    "file": None,
                     "created_at": ANY,
                     "changed_at": ANY,
                     "deleted_at": ANY,
                     "readers": [],
-                    "fullname": self.message3.from_user.full_name,
+                    "name": self.message3.from_user.name,
                 }
             ],
         }

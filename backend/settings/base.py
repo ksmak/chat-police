@@ -1,9 +1,7 @@
-# Python
 import sys
 import os
 from pathlib import Path
 import pygments.formatters
-from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv(".env")
@@ -28,7 +26,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "rest_framework",
-    "rest_framework_simplejwt",
+    "rest_framework.authtoken",
     "corsheaders",
     "debug_toolbar",
     "django_celery_results",
@@ -119,22 +117,12 @@ DATETIME_FORMAT = os.getenv("DATETIME_FORMAT")
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "TEST_REQUEST_RENDERER_CLASSES": (
         "rest_framework.renderers.MultiPartRenderer",
         "rest_framework.renderers.JSONRenderer",
-    ),
-}
-
-# Simple JWT
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(
-        minutes=int(os.getenv("ACCESS_TOKEN_LIFETIME_MINUTES"))
-    ),
-    "REFRESH_TOKEN_LIFETIME": timedelta(
-        hours=int(os.getenv("REFRESH_TOKEN_LIFETIME_HOURS"))
     ),
 }
 

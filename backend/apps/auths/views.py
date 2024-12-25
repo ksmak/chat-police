@@ -1,22 +1,45 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework import exceptions
+from rest_framework.response import Response
 
-from .serializers import (
-    CustomUserSerializer,
-    MyTokenObtainPairSerializer,
-)
-
+from .serializers import CustomUserSerializer
 
 User = get_user_model()
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    permission_classes = (AllowAny,)
+def get_user_ip(request):
+    ip_address = request.META.get("HTTP_X_FORWARDED_FOR")
 
-    serializer_class = MyTokenObtainPairSerializer
+    if ip_address:
+        ip_address = ip_address.split(",")[0]
+    else:
+        ip_address = request.META.get("REMOTE_ADDR")
+
+    return ip_address
+
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        ip = get_user_ip(request)
+        try:
+            user = User.objects.get(ip=ip)
+        except User.DoesNotExist:
+            raise exceptions.AuthenticationFailed("User not found.")
+
+        token, created = Token.objects.get_or_create(user=user)
+
+        return Response(
+            {
+                "token": token.key,
+                "user_name": user.name,
+            }
+        )
 
 
 class UsersViewSet(ReadOnlyModelViewSet):
