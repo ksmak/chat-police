@@ -65,8 +65,6 @@ class ChatSerializerTest(TestCase):
     def test_reader_serializer(self):
         serializer = ReaderSerializer(self.reader)
         test_data = {
-            "id": ANY,
-            "message": self.message1.id,
             "user": self.user2.id,
             "name": self.user2.name,
             "read_date": ANY,
@@ -88,8 +86,6 @@ class ChatSerializerTest(TestCase):
             "deleted_at": ANY,
             "readers": [
                 {
-                    "id": ANY,
-                    "message": self.message1.id,
                     "user": self.user2.id,
                     "name": self.user2.name,
                     "read_date": ANY,

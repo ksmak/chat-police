@@ -10,7 +10,7 @@ class ReaderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reader
-        fields = ("id", "message", "user", "name", "read_date")
+        fields = ("user", "name", "read_date")
 
     def get_name(self, obj):
         return obj.user.name

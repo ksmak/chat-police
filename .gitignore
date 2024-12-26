@@ -1,3 +1,4 @@
 backend/venv/
 backend/.env
 backend/media/
+**/__pycache__/
