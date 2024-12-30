@@ -21,9 +21,8 @@
             "request": "launch",
             "args": [
                 "test",
-                "chats.test_consumers"
-                // "auths",
-                // "chats"
+                "auths",
+                "chats"
             ],
             "django": true,
             "autoStartBrowser": false,

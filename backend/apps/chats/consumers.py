@@ -40,8 +40,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
-    async def receive(self, text_data):
-        content = json.loads(text_data)
+    async def receive_json(self, content):
         if content["message"] == "send_new":
             create_message.delay(
                 message_type=content["message_type"],
@@ -50,6 +49,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 text=content["text"],
                 file=content["file"],
             )
+            await self.send_json({"message": "creating message..."})
 
         elif content["message"] == "send_read":
             read_message.delay(
@@ -57,6 +57,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 from_id=self.user.id,
                 message_id=content["message_id"],
             )
+            await self.send_json({"message": "reading message..."})
 
         elif content["message"] == "send_edit":
             edit_message.delay(
@@ -65,12 +66,15 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 text=content["text"],
                 message_id=content["message_id"],
             )
+            await self.send_json({"message": "editing message..."})
 
         elif content["message"] == "send_delete":
             delete_message.delay(
                 message_type=content["message_type"],
+                from_id=self.user.id,
                 message_id=content["message_id"],
             )
+            await self.send_json({"message": "deleting message..."})
 
     async def chat_message(self, event):
         await self.send_json(event)

@@ -3,7 +3,7 @@ from unittest.mock import ANY
 from django.test.utils import override_settings
 import pytest
 
-from .tasks import (
+from chats.tasks import (
     update_chat,
     create_message,
     read_message,
@@ -12,7 +12,7 @@ from .tasks import (
     clean_chat,
 )
 from auths.models import CustomUser
-from .models import Chat, Message
+from chats.models import Chat, Message
 
 
 @pytest.mark.celery(result_backend="redis://")

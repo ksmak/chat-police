@@ -6,9 +6,9 @@ from rest_framework.test import (
 )
 from unittest.mock import ANY
 
-from .models import CustomUser
-from .serializers import CustomUserSerializer
-from .views import UsersViewSet, CustomAuthToken
+from auths.models import CustomUser
+from auths.serializers import CustomUserSerializer
+from auths.views import UsersViewSet, CustomAuthToken
 
 
 class UserViewSetTest(TestCase):

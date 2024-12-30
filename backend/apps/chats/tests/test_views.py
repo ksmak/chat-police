@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from auths.models import CustomUser
-from .models import Chat, Message
+from chats.models import Chat, Message
 from unittest.mock import ANY
 
 

@@ -1,0 +1,4 @@
+sudo service redis-server start
+source venv/bin/activate
+celery -A settings beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler --detach
+celery -A settings worker -l info --detach

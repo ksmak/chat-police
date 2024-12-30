@@ -2,8 +2,8 @@ from django.test import TestCase
 from unittest.mock import ANY
 
 from auths.models import CustomUser
-from .models import Chat, Message, Reader, OnlineUser
-from .serializers import (
+from chats.models import Chat, Message, Reader, OnlineUser
+from chats.serializers import (
     ReaderSerializer,
     MessageSerializer,
     ChatSerializer,
